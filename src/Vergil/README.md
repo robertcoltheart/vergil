@@ -1,6 +1,4 @@
-# Vergil
-
-[![Docs](https://img.shields.io/badge/docs-wiki-blue.svg?style=for-the-badge)](https://github.com/robertcoltheart/vergil/wiki) [![NuGet](https://img.shields.io/nuget/v/Vergil?style=for-the-badge)](https://www.nuget.org/packages/Vergil) [![Discussions](https://img.shields.io/badge/DISCUSS-ON%20GITHUB-yellow?style=for-the-badge)](https://github.com/robertcoltheart/vergil/discussions) [![License](https://img.shields.io/github/license/robertcoltheart/vergil?style=for-the-badge)](https://github.com/robertcoltheart/vergil/blob/master/LICENSE)
+## About
 
 A thing that does something.
 
@@ -21,6 +19,3 @@ Discuss with us on [Discussions](https://github.com/robertcoltheart/vergil/discu
 
 ## Contributing
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to this project.
-
-## License
-Vergil is released under the [MIT License](LICENSE)

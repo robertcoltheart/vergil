@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.1</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!--<GenerateDocumentationFile>true</GenerateDocumentationFile>-->
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Robert Coltheart</Authors>
+    <Description>A thing that does something</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/robertcoltheart/vergil</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/robertcoltheart/vergil</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags></PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+</Project>
