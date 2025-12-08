@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/Vergil.Simple/Vergil.Simple.csproj" />
+  <Project Path="src/Vergil.Tests/Vergil.Tests.csproj" />
+  <Project Path="src/Vergil/Vergil.csproj" />
+</Solution>

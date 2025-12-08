@@ -1,3 +1,5 @@
+using System.IO.Compression;
+
 namespace Vergil;
 
 public class Repository : IRepository
@@ -17,7 +19,7 @@ public class Repository : IRepository
 
             if (reference == null)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("HEAD reference is missing");
             }
 
             return reference is SymbolicReference

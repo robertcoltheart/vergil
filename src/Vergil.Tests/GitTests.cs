@@ -1,15 +1,17 @@
-using Xunit;
+using Vergil.Simple;
 
 namespace Vergil.Tests;
 
 public class GitTests
 {
-    [Fact]
-    public void Test()
+    [Test]
+    public async Task Test()
     {
-        //var repository = new Repository(@"C:\Projects\repo\.git");
+        var repository = new Repository(@"C:\Projects\machine\machine.specifications\.git");
 
-        //var head = repository.Head;
-        //var tip = head.Tip;
+        var head = repository.GetHead();
+        var tags = repository.GetTags().ToArray();
+
+        await Assert.That(true).IsTrue();
     }
 }

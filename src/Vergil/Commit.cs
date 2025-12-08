@@ -1,6 +1,6 @@
 namespace Vergil;
 
-public class Commit : GitObject
+public class Commit(ObjectId id) : GitObject(id)
 {
 
 }

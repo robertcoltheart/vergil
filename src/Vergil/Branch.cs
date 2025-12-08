@@ -1,11 +1,6 @@
 namespace Vergil;
 
-public class Branch : ReferencePointer<Commit>
+public class Branch(IRepository repository, Reference reference) : ReferencePointer<Commit>(repository, reference)
 {
-    public Branch(IRepository repository, Reference reference)
-        : base(reference)
-    {
-    }
-
-    public Commit Tip { get; }
+    public Commit? Tip => TargetObject;
 }

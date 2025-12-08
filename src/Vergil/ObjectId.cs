@@ -14,6 +14,16 @@ public readonly struct ObjectId : IEquatable<ObjectId>
 
     public string Sha { get; }
 
+    public static ObjectId Parse(string value)
+    {
+        if (value.Length < 40)
+        {
+            throw new ArgumentException("Invalid SHA value", nameof(value));
+        }
+
+        return new ObjectId(value[..40]);
+    }
+
     public bool Equals(ObjectId other)
     {
         return Sha == other.Sha;

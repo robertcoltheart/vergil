@@ -2,22 +2,15 @@ using System.IO.Compression;
 
 namespace Vergil.IO;
 
-public class LooseFileSystem : IFileSystem
+public class LooseFileSystem(IRepository repository) : IFileSystem
 {
-    private static readonly byte[] ZlibNoCompression = { 0x78, 0x01 };
+    private static readonly byte[] ZlibNoCompression = [0x78, 0x01];
 
-    private static readonly byte[] ZlibDefaultCompression = { 0x78, 0x9c };
+    private static readonly byte[] ZlibDefaultCompression = [0x78, 0x9c];
 
-    private static readonly byte[] ZlibBestCompression = { 0x78, 0xda };
-
-    private readonly IRepository repository;
+    private static readonly byte[] ZlibBestCompression = [0x78, 0xda];
 
     private readonly byte[] buffer = new byte[128];
-
-    public LooseFileSystem(IRepository repository)
-    {
-        this.repository = repository;
-    }
 
     public RawObject? Read(ObjectId id)
     {

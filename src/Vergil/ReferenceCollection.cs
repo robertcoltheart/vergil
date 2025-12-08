@@ -2,23 +2,18 @@ using System.Collections;
 
 namespace Vergil;
 
-public class ReferenceCollection : IEnumerable<Reference>
+public class ReferenceCollection(IRepository repository) : IEnumerable<Reference>
 {
+    private const string SymbolicRef = "ref: ";
+
     private static readonly string[] Prefixes =
-    {
+    [
         string.Empty,
         "refs/",
         "refs/tags/",
         "refs/heads/",
         "refs/remotes/"
-    };
-
-    private readonly IRepository repository;
-
-    public ReferenceCollection(IRepository repository)
-    {
-        this.repository = repository;
-    }
+    ];
 
     public Reference? this[string name] => Resolve(name);
 
@@ -47,35 +42,31 @@ public class ReferenceCollection : IEnumerable<Reference>
 
     private Reference? ResolveLoose(string name)
     {
-        foreach (var prefix in Prefixes)
+        var path = Path.Combine(repository.Info.Path, name);
+
+        if (!File.Exists(path))
         {
-            var refName = $"{prefix}{name}";
-            var path = Path.Combine(repository.Info.Path, refName);
-
-            if (File.Exists(path))
-            {
-                var data = File.ReadAllText(path);
-
-                if (data.StartsWith("ref: "))
-                {
-                    var targetName = data[5..];
-                    var target = Resolve(targetName);
-
-                    if (target == null)
-                    {
-                        return null;
-                    }
-
-                    return new SymbolicReference(target);
-                }
-
-                var id = new ObjectId(data[..20]);
-
-                return new DirectReference();
-            }
+            return null;
         }
 
-        return null;
+        var data = File.ReadAllText(path).TrimEnd();
+
+        if (data.StartsWith(SymbolicRef))
+        {
+            var targetName = data[SymbolicRef.Length..];
+            var target = Resolve(targetName);
+
+            if (target == null)
+            {
+                return null;
+            }
+
+            return new SymbolicReference(name, targetName, target);
+        }
+
+        var id = ObjectId.Parse(data);
+
+        return new DirectReference(repository, name, id);
     }
 
     private Reference? ResolvePacked(string name)
@@ -97,7 +88,7 @@ public class ReferenceCollection : IEnumerable<Reference>
 
                     if (refName == name)
                     {
-                        return new DirectReference();
+                        return new DirectReference(repository, "", default);
                     }
                 }
 
