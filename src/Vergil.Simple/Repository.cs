@@ -41,15 +41,23 @@ public class Repository(string directory)
             throw new InvalidOperationException("Object database corrupted");
         }
 
-        using var stream = File.OpenRead(path);
-        using var deflate = new DeflateStream(stream, CompressionMode.Decompress);
-        using var reader = new StreamReader(deflate);
+        using var reader = new ObjectReader(path);
 
-        stream.Seek(2, SeekOrigin.Begin);
+        var commit = new Commit(sha);
 
-        var data = reader.ReadToEnd();
+        var (type, reference) = reader.Read();
 
-        return new Commit("");
+        while (!string.IsNullOrEmpty(type))
+        {
+            if (type == "parent")
+            {
+                commit.Parents.Add(reference);
+            }
+
+            (type, reference) = reader.Read();
+        }
+
+        return commit;
     }
 
     private string? Resolve(string name)
