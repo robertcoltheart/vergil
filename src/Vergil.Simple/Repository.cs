@@ -1,5 +1,3 @@
-using System.IO.Compression;
-
 namespace Vergil.Simple;
 
 public class Repository(string directory)
@@ -62,7 +60,7 @@ public class Repository(string directory)
 
     private string? Resolve(string name)
     {
-        return ResolveLoose(name);
+        return ResolveLoose(name) ?? ResolvePacked(name);
     }
 
     private string? ResolveLoose(string name)
@@ -90,5 +88,35 @@ public class Repository(string directory)
         }
 
         return data;
+    }
+
+    private string? ResolvePacked(string name)
+    {
+        var path = Path.Combine(directory, "packed-refs");
+
+        if (File.Exists(path))
+        {
+            using var reader = new StreamReader(File.OpenRead(path));
+
+            var line = reader.ReadLine();
+
+            while (line != null)
+            {
+                if (!string.IsNullOrEmpty(line) && line[0] != (byte)'#')
+                {
+                    var id = line[..40];
+                    var refName = line[(id.Length + 1)..];
+
+                    if (refName == name)
+                    {
+                        return "??";
+                    }
+                }
+
+                line = reader.ReadLine();
+            }
+        }
+
+        return null;
     }
 }

@@ -8,11 +8,11 @@ public class SemanticVersion : IEquatable<SemanticVersion>, IComparable<Semantic
 
     public int Patch { get; }
 
-    public IEnumerable<string> PrereleaseLabels { get; }
+    public IEnumerable<string> PrereleaseLabels { get; } = [];
 
     public bool IsPrerelease { get; }
 
-    public IEnumerable<string> Metadata { get; }
+    public IEnumerable<string> Metadata { get; } = [];
 
     public static SemanticVersion Parse(string value)
     {
