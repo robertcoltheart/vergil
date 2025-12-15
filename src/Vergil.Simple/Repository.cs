@@ -65,9 +65,17 @@ public class Repository(string directory)
 
     private string? ResolveLoose(string name)
     {
-        var path = Path.Combine(directory, name);
+        var paths = new[]
+        {
+            Path.Combine(directory, name),
+            Path.Combine(directory, "refs", "heads", name),
+            Path.Combine(directory, "refs", "tags", name),
+            Path.Combine(directory, "refs", "remotes", name),
+        };
 
-        if (!File.Exists(path))
+        var path = paths.FirstOrDefault(File.Exists);
+
+        if (string.IsNullOrEmpty(path))
         {
             return null;
         }
