@@ -104,13 +104,15 @@ public class Repository(string directory)
 
         if (File.Exists(path))
         {
-            using var reader = new StreamReader(File.OpenRead(path));
+            using var reader = new StringReader(File.ReadAllText(path));
 
             var line = reader.ReadLine();
 
+            var isPeeled = line?.StartsWith("# pack-refs with:") == true && line.Contains("peeled");
+
             while (line != null)
             {
-                if (!string.IsNullOrEmpty(line) && line[0] != (byte)'#')
+                if (!line.StartsWith('#'))
                 {
                     var id = line[..40];
                     var refName = line[(id.Length + 1)..];
