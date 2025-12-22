@@ -2,11 +2,11 @@ namespace Vergil.Simple;
 
 public class Repository(string directory)
 {
-    private const string SymbolicRef = "ref: ";
+    private readonly References references = new(directory);
 
     public Commit GetHead()
     {
-        var sha = Resolve("HEAD");
+        var sha = references.Resolve("HEAD");
 
         if (string.IsNullOrEmpty(sha))
         {
@@ -18,16 +18,7 @@ public class Repository(string directory)
 
     public IEnumerable<Tag> GetTags()
     {
-        var path = Path.Combine(directory, "refs", "tags");
-        var files = Directory.GetFiles(path);
-
-        foreach (var file in files)
-        {
-            var name = Path.GetFileName(file);
-            var sha = File.ReadAllText(file).TrimEnd();
-
-            yield return new Tag(name, sha);
-        }
+        return references.GetTags();
     }
 
     private Commit ReadCommit(string sha)
@@ -56,77 +47,5 @@ public class Repository(string directory)
         }
 
         return commit;
-    }
-
-    private string? Resolve(string name)
-    {
-        return ResolveLoose(name) ?? ResolvePacked(name);
-    }
-
-    private string? ResolveLoose(string name)
-    {
-        var paths = new[]
-        {
-            Path.Combine(directory, name),
-            Path.Combine(directory, "refs", "heads", name),
-            Path.Combine(directory, "refs", "tags", name),
-            Path.Combine(directory, "refs", "remotes", name),
-        };
-
-        var path = paths.FirstOrDefault(File.Exists);
-
-        if (string.IsNullOrEmpty(path))
-        {
-            return null;
-        }
-
-        var data = File.ReadAllText(path).TrimEnd();
-
-        if (data.StartsWith(SymbolicRef))
-        {
-            var targetName = data[SymbolicRef.Length..];
-            var target = Resolve(targetName);
-
-            if (target == null)
-            {
-                return null;
-            }
-
-            return target;
-        }
-
-        return data;
-    }
-
-    private string? ResolvePacked(string name)
-    {
-        var path = Path.Combine(directory, "packed-refs");
-
-        if (File.Exists(path))
-        {
-            using var reader = new StringReader(File.ReadAllText(path));
-
-            var line = reader.ReadLine();
-
-            var isPeeled = line?.StartsWith("# pack-refs with:") == true && line.Contains("peeled");
-
-            while (line != null)
-            {
-                if (!line.StartsWith('#'))
-                {
-                    var id = line[..40];
-                    var refName = line[(id.Length + 1)..];
-
-                    if (refName == name)
-                    {
-                        return "??";
-                    }
-                }
-
-                line = reader.ReadLine();
-            }
-        }
-
-        return null;
     }
 }
