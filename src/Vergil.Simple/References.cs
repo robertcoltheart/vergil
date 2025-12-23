@@ -1,5 +1,3 @@
-using System.Xml.Linq;
-
 namespace Vergil.Simple;
 
 public class References(string directory)
@@ -34,7 +32,13 @@ public class References(string directory)
 
     private IEnumerable<Tag> GetPackedTags()
     {
-
+        foreach (var (reference, id) in packed)
+        {
+            if (reference.StartsWith("refs/tags/"))
+            {
+                yield return new Tag(reference[10..], id);
+            }
+        }
     }
 
     private string? ResolveLoose(string name)
@@ -74,6 +78,23 @@ public class References(string directory)
 
     private string? ResolvePacked(string name)
     {
+        var paths = new[]
+        {
+            name,
+            $"refs/heads/{name}",
+            $"refs/tags/{name}",
+            $"refs/remotes/{name}",
+        };
+
+        foreach (var path in paths)
+        {
+            if (packed.TryGetValue(path, out var reference))
+            {
+                return reference;
+            }
+        }
+
+        return null;
     }
 
     private static Dictionary<string, string> LoadPackedReferences(string directory)
