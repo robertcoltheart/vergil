@@ -30,9 +30,91 @@ public class SemanticVersion : IEquatable<SemanticVersion>, IComparable<Semantic
     {
         version = new SemanticVersion();
 
-        var plusIndex = value.IndexOf('+');
+        var metadataIndex = value.IndexOf('+');
+
+        if (metadataIndex >= 0)
+        {
+            version.Metadata = value[(metadataIndex + 1)..];
+
+            if (!version.Metadata.Split('.').All(x => IsValidIdentifier(x, true)))
+            {
+                return false;
+            }
+
+            value = value[..metadataIndex];
+        }
+
+        var prereleaseIndex = value.IndexOf('-');
+
+        if (prereleaseIndex >= 0)
+        {
+            version.PrereleaseLabels = value[(prereleaseIndex + 1)..].Split('.');
+
+            if (!version.PrereleaseLabels.All(x => IsValidIdentifier(x, false)))
+            {
+                return false;
+            }
+
+            value = value[..prereleaseIndex];
+        }
+
+        var versionParts = value.Split('.');
+
+        if (versionParts.Length != 3)
+        {
+            return false;
+        }
+
+        if (!TryParseVersionPart(versionParts[2], out var patch) || patch < 0)
+        {
+            return false;
+        }
+
+        version.Patch = patch;
+
+        if (!TryParseVersionPart(versionParts[1], out var minor) || minor < 0)
+        {
+            return false;
+        }
+
+        version.Minor = minor;
+
+        if (!TryParseVersionPart(versionParts[0], out var major) || major < 0)
+        {
+            return false;
+        }
+
+        version.Major = major;
 
         return true;
+    }
+
+    private static bool TryParseVersionPart(string value, out int result)
+    {
+        result = 0;
+
+        if (string.IsNullOrEmpty(value))
+        {
+            return false;
+        }
+
+        if (value.Length > 1 && value.StartsWith('0'))
+        {
+            return false;
+        }
+
+        return int.TryParse(value, out result);
+    }
+
+    private static bool IsValidIdentifier(string value, bool allowLeadingZero)
+    {
+        if (!allowLeadingZero && value.Length > 1 && value.StartsWith('0'))
+        {
+            return false;
+        }
+
+        return !string.IsNullOrEmpty(value) &&
+               value.All(c => c is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9' or '-');
     }
 
     public override string ToString()
@@ -98,6 +180,16 @@ public class SemanticVersion : IEquatable<SemanticVersion>, IComparable<Semantic
 
     private static int ComparePrereleaseLabels(SemanticVersion x, SemanticVersion y)
     {
+        if (!x.IsPrerelease && y.IsPrerelease)
+        {
+            return 1;
+        }
+
+        if (x.IsPrerelease && !y.IsPrerelease)
+        {
+            return -1;
+        }
+
         for (var i = 0; i < Math.Min(x.PrereleaseLabels.Count, y.PrereleaseLabels.Count); i++)
         {
             var compare = ComparePrerelease(x.PrereleaseLabels[i], y.PrereleaseLabels[i]);
