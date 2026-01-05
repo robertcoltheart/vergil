@@ -116,6 +116,8 @@ public class References(string directory)
             {
                 if (line.StartsWith('#'))
                 {
+                    line = reader.ReadLine();
+
                     continue;
                 }
 

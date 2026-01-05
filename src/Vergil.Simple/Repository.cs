@@ -4,6 +4,8 @@ public class Repository(string directory)
 {
     private readonly References references = new(directory);
 
+    private readonly ObjectDirectory objects = new(directory);
+
     public Commit GetHead()
     {
         var sha = references.Resolve("HEAD");
@@ -21,13 +23,18 @@ public class Repository(string directory)
         return references.GetTags();
     }
 
-    private Commit ReadCommit(string sha)
+    public Commit Lookup(string sha)
+    {
+        return ReadCommit(sha) ?? objects.ReadCommit(sha);
+    }
+
+    private Commit? ReadCommit(string sha)
     {
         var path = Path.Combine(directory, "objects", sha[..2], sha[2..]);
 
         if (!File.Exists(path))
         {
-            throw new InvalidOperationException("Object database corrupted");
+            return null;
         }
 
         using var reader = new ObjectReader(path);
