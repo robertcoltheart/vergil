@@ -1,0 +1,24 @@
+name: version
+
+on:
+  pull_request:
+
+jobs:
+  version:
+    name: version
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v4.2.0
+        with:
+          versionSpec: '6.4.x'
+
+      - name: Determine Version
+        id: version_step
+        uses: gittools/actions/gitversion/execute@v4.2.0
