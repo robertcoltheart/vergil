@@ -23,6 +23,10 @@ jobs:
         id: version_step
         uses: gittools/actions/gitversion/execute@v4.2.0
 
+      - name: Show head ref
+        run: |
+          echo "The source branch is ${{ github.head_ref }}"
+
       - name: Display GitVersion variables (without prefix)
         run: |
           echo "FullSemVer (env.fullSemVer)            : ${{ env.fullSemVer }}"
