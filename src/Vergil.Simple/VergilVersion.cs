@@ -20,5 +20,5 @@ public class VergilVersion
 
     public string PackageVersion => $"{Major}.{Minor}.{Patch}-{PreRelease}";
 
-    public string Versino => PackageVersion;
+    public string Version => PackageVersion;
 }
