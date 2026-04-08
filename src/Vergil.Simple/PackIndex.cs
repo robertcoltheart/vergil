@@ -65,6 +65,9 @@ public class PackIndex
     }
 
     public long FindOffset()
+    {
+        return 0;
+    }
 
     private int GetInt64OffsetCount()
     {

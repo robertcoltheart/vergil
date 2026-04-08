@@ -10,7 +10,42 @@ public class ObjectDirectory(string directory)
 
     public Commit ReadCommit(string sha)
     {
+        return ReadCommitPacked(sha) ?? ReadCommitLoose(sha) ?? throw new InvalidOperationException("Sha not found");
+    }
+
+    private Commit? ReadCommitPacked(string sha)
+    {
+        var initial = Convert.ToByte(sha[..2], 16);
+
         return null;
+    }
+
+    private Commit? ReadCommitLoose(string sha)
+    {
+        var path = Path.Combine(directory, "objects", sha[..2], sha[2..]);
+
+        if (!File.Exists(path))
+        {
+            return null;
+        }
+
+        using var reader = new ObjectReader(path);
+
+        var commit = new Commit(sha);
+
+        var (type, reference) = reader.Read();
+
+        while (!string.IsNullOrEmpty(type))
+        {
+            if (type == "parent")
+            {
+                commit.Parents.Add(reference);
+            }
+
+            (type, reference) = reader.Read();
+        }
+
+        return commit;
     }
 
     private static IEnumerable<PackIndex> ScanPackFiles(string directory)
