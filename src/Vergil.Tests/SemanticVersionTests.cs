@@ -1,5 +1,3 @@
-using Vergil.Simple;
-
 namespace Vergil.Tests;
 
 public class SemanticVersionTests
