@@ -1,37 +1,32 @@
 using System.Collections;
-using System.Text;
 
 namespace Vergil.Git;
 
 public class Commit(IRepository repository, ObjectId id, ObjectId[] parents) : GitObject(id)
 {
+    private const int TreeEntryLength = 46;
+
+    private const int ParentEntryLength = 48;
+
+    private static readonly byte[] Parent = "parent "u8.ToArray();
+
     private readonly ParentsCollection parents = new(repository, parents);
 
     public IEnumerable<Commit> Parents => parents;
 
     public static Commit Parse(IRepository repository, ObjectId id, ReadOnlySpan<byte> data)
     {
-        using var reader = new StringReader(Encoding.UTF8.GetString(data));
-
         var parents = new List<ObjectId>();
 
-        var line = reader.ReadLine();
+        var buffer = data.Slice(TreeEntryLength);
 
-        while (line != null)
+        while (buffer.Slice(0, Parent.Length).SequenceEqual(Parent))
         {
-            if (line.Length == 0)
-            {
-                break;
-            }
+            var parent = buffer.Slice(Parent.Length, 40);
 
-            if (line.StartsWith("parent "))
-            {
-                var parent = new ObjectId(line[7..]);
+            parents.Add(new ObjectId(parent));
 
-                parents.Add(parent);
-            }
-
-            line = reader.ReadLine();
+            buffer = buffer.Slice(ParentEntryLength);
         }
 
         return new Commit(repository, id, parents.ToArray());

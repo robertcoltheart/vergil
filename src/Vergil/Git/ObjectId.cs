@@ -28,6 +28,17 @@ public class ObjectId : IEquatable<ObjectId>
         Sha = sha;
     }
 
+    public ObjectId(ReadOnlySpan<byte> rawId)
+    {
+        if (rawId.Length != HexLength)
+        {
+            throw new ArgumentException("Invalid object id");
+        }
+
+        RawId = Convert.FromHexString(rawId);
+        Sha = Convert.ToHexString(RawId);
+    }
+
     public string Sha { get; }
 
     public byte[] RawId { get; }
