@@ -9,6 +9,28 @@ Install the package from NuGet with `dotnet add package Vergil`.
 Example code
 ```
 
+### Versioning Strategy
+- If current commit has a version tag
+  - Use the version as-is
+- If current commit does not have a version tag
+  - Search commit history for highest version tag
+    - No tag found
+      - Use 0.0.0 with height
+    - Tag found
+      - Use tag with height
+
+```mermaid
+flowchart TD
+    A[Current commit] --> |Has tag| B[Use tag]
+    A --> |No tag| C[Search history]
+    C --> |No tags| D[0.0.0]
+    C --> |Highest tag| E[Tag + height]
+```
+
+#### Options
+1. Choose which part of the version to increment if height needs to be added
+2. Use a custom label for pre-release versions, or use the current branch name
+
 ## Documentation
 See the [wiki](https://github.com/robertcoltheart/vergil/wiki) for examples and help using Vergil.
 

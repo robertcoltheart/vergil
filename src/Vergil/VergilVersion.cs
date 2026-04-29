@@ -31,4 +31,19 @@ public class VergilVersion
     public string PackageVersion => $"{Major}.{Minor}.{Patch}-{PreRelease}";
 
     public string Version => PackageVersion;
+
+    public VergilVersion Increment(VersionPart part)
+    {
+        return this;
+    }
+
+    public VergilVersion WithBranchLabel()
+    {
+        return this;
+    }
+
+    public VergilVersion WithLabel(string label)
+    {
+        return this;
+    }
 }

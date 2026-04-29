@@ -1,16 +1,18 @@
 using LibGit2Sharp;
-using Repository = LibGit2Sharp.Repository;
 
 namespace Vergil.Tests;
 
 public class RepositoryFixture : IDisposable
 {
+    private readonly Action<VergilVersionBuilder>? action;
+
     private readonly string path = Path.Combine("Repositories", Guid.NewGuid().ToString("N"));
 
     private readonly IRepository repository;
 
-    public RepositoryFixture()
+    public RepositoryFixture(Action<VergilVersionBuilder>? action = null)
     {
+        this.action = action;
         repository = new Repository(Repository.Init(path));
     }
 
@@ -61,10 +63,14 @@ public class RepositoryFixture : IDisposable
 
     public async Task AssertVersion(string version)
     {
-        //var versioner = new Versioner();
-        //var calcualted = versioner.Calculate();
+        var builder = new VergilVersionBuilder()
+            .ForPath(path);
 
-        //await Assert.That(calcualted.PackageVersion).IsEqualTo(version);
+        action?.Invoke(builder);
+
+        var calculated = builder.Build();
+
+        await Assert.That(calculated.SemanticVersion).IsEqualTo(version);
     }
 
     public void Dispose()
@@ -77,6 +83,7 @@ public class RepositoryFixture : IDisposable
         }
         catch
         {
+            // Ignored
         }
     }
 

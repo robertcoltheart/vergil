@@ -1,6 +1,6 @@
 namespace Vergil.Git;
 
-public class Repository : IRepository
+internal class Repository : IRepository
 {
     public Repository(string path)
     {
