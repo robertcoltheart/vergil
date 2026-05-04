@@ -7,6 +7,11 @@ public class VergilVersionBuilder
         return this;
     }
 
+    public VergilVersionBuilder WithTagPrefix(string prefix)
+    {
+        return this;
+    }
+
     public VergilVersionBuilder WithLabel(string label)
     {
         return this;
@@ -22,8 +27,13 @@ public class VergilVersionBuilder
         return this;
     }
 
+    public VergilVersionBuilder AddBranchDefinition(string pattern)
+    {
+        return this;
+    }
+
     public VergilVersion Build()
     {
-        return new VergilVersion();
+        return null;
     }
 }

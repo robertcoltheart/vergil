@@ -1,4 +1,5 @@
 using LibGit2Sharp;
+using Vergil.Versioning;
 
 namespace Vergil.Tests;
 
@@ -68,9 +69,14 @@ public class RepositoryFixture : IDisposable
 
         action?.Invoke(builder);
 
-        var calculated = builder.Build();
+        var calculator = new VersionCalculator(new VergilConfiguration
+        {
+            Path = path
+        });
 
-        await Assert.That(calculated.SemanticVersion).IsEqualTo(version);
+        var calculated = calculator.Calculate();
+
+        await Assert.That(calculated.SemVer).IsEqualTo(version);
     }
 
     public void Dispose()

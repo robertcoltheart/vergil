@@ -6,5 +6,6 @@ public enum VersionPart
     Major,
     Minor,
     Patch,
-    PreRelease
+    PreRelease,
+    Metadata
 }

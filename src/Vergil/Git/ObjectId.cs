@@ -14,7 +14,7 @@ public class ObjectId : IEquatable<ObjectId>
         }
 
         RawId = rawId;
-        Sha = Convert.ToHexString(rawId);
+        Sha = Convert.ToHexString(rawId).ToLowerInvariant();
     }
 
     public ObjectId(string sha)
@@ -25,7 +25,7 @@ public class ObjectId : IEquatable<ObjectId>
         }
 
         RawId = Convert.FromHexString(sha);
-        Sha = sha;
+        Sha = sha.ToLowerInvariant();
     }
 
     public ObjectId(ReadOnlySpan<byte> rawId)
@@ -36,7 +36,7 @@ public class ObjectId : IEquatable<ObjectId>
         }
 
         RawId = Convert.FromHexString(rawId);
-        Sha = Convert.ToHexString(RawId);
+        Sha = Convert.ToHexString(RawId).ToLowerInvariant();
     }
 
     public string Sha { get; }

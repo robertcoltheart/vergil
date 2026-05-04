@@ -77,6 +77,7 @@ public class LooseOdbBackend(string path) : OdbBackend
     private static HashSet<string> GetInitialPaths(string path)
     {
         return Directory.GetDirectories(Path.Combine(path, "objects"))
+            .Select(x => Path.GetFileName(x))
             .Where(x => x.Length == 2)
             .ToHashSet();
     }

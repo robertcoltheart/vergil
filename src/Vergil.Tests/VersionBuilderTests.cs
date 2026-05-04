@@ -59,4 +59,15 @@ public class VersionBuilderTests
 
         await fixture.AssertVersion("1.1.2");
     }
+
+    [Test]
+    public async Task CanVersionCommitWithTagAndHeight()
+    {
+        using var fixture = new RepositoryFixture();
+
+        fixture.CommitAndTag("v1.1.0");
+        fixture.Commit();
+
+        await fixture.AssertVersion("1.1.0");
+    }
 }

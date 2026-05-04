@@ -41,6 +41,7 @@ public class ReferenceCollection(IRepository repository) : IEnumerable<Reference
     private IEnumerable<string> GetLooseReferences()
     {
         return referencePaths
+            .Where(Directory.Exists)
             .SelectMany(x => Directory.GetFiles(x, "*", SearchOption.AllDirectories))
             .Select(x => Path.GetRelativePath(repository.Info.Path, x))
             .Select(NormalizePath);

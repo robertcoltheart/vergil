@@ -1,36 +1,69 @@
+using System.Text.Json;
+
 namespace Vergil;
 
 public class VergilVersion
 {
-    public int Major { get; }
+    private static readonly JsonSerializerOptions Options = new()
+    {
+        WriteIndented = true
+    };
 
-    public int Minor { get; }
+    public string AssemblySemFileVer => AssemblySemVer;
 
-    public int Patch { get; }
+    public string AssemblySemVer => $"{MajorMinorPatch}.0";
 
-    public string BranchName { get; }
+    public required string BranchName { get; init; }
 
-    public string Sha { get; }
+    // Number of commits since VersionSourceSha
+    public int BuildMetadata => VersionSourceDistance;
 
-    public string ShortSha { get; }
+    public string EscapedBranchName => BranchName
+        .Replace('/', '-')
+        .Replace('\\', '-')
+        .Replace('.', '-');
 
-    public string PreRelease { get; } = string.Empty;
+    public string FullBuildMetadata => IsPreRelease
+        ? $"{PreReleaseNumber}.Branch.{EscapedBranchName}.Sha.{Sha}"
+        : $"Branch.{EscapedBranchName}.Sha.{Sha}";
 
-    public string BuildMetadata { get; } = string.Empty;
+    public string FullSemVer => $"{SemVer}+{FullBuildMetadata}";
 
-    public string SemanticVersion { get; } = string.Empty;
+    public required int Major { get; init; }
 
     public string MajorMinorPatch => $"{Major}.{Minor}.{Patch}";
 
-    public string AssemblyVersion => $"{Major}.0.0.0";
+    public required int Minor { get; init; }
 
-    public string FileVersion => $"{Major}.{Minor}.{Patch}.0";
+    public required int Patch { get; init; }
 
-    public string InformationalVersion => SemanticVersion;
+    public required string PreReleaseLabel { get; init; }
 
-    public string PackageVersion => $"{Major}.{Minor}.{Patch}-{PreRelease}";
+    // Number of commits since current pre-release initial version
+    public required int PreReleaseNumber { get; init; }
 
-    public string Version => PackageVersion;
+    public string PreReleaseTag => IsPreRelease
+        ? $"{PreReleaseLabel}.{PreReleaseNumber}"
+        : string.Empty;
+
+    public string SemVer => IsPreRelease
+        ? $"{MajorMinorPatch}-{PreReleaseTag}"
+        : $"{MajorMinorPatch}";
+
+    public required string Sha { get; init; }
+
+    public string ShortSha => Sha[..7];
+
+    // Number of commits since most recent version
+    public required int VersionSourceDistance { get; init; }
+
+    public required string VersionSourceIncrement { get; init; }
+
+    public required string VersionSourceSemVer { get; init; }
+
+    public required string VersionSourceSha { get; init; }
+
+    private bool IsPreRelease => !string.IsNullOrEmpty(PreReleaseLabel);
 
     public VergilVersion Increment(VersionPart part)
     {
@@ -45,5 +78,10 @@ public class VergilVersion
     public VergilVersion WithLabel(string label)
     {
         return this;
+    }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this, Options);
     }
 }

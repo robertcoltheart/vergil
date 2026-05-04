@@ -52,6 +52,11 @@ internal class Repository : IRepository
 
     public override string ToString()
     {
-        return $"Workdir = \"{Info.WorkingDirectory}\"";
+        return $"Workdir = '{Info.WorkingDirectory}'";
+    }
+
+    public void Dispose()
+    {
+        ObjectDatabase.Dispose();
     }
 }

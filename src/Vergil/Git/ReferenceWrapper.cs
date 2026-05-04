@@ -36,7 +36,7 @@ public abstract class ReferenceWrapper<T>(IRepository repository, Reference refe
             ? TargetObject.Id.ToString(7)
             : "?";
 
-        return $"{CanonicalName} => \"{target}\"";
+        return $"{CanonicalName} => '{target}'";
     }
 
     private static T? GetTargetObject(IRepository repository, Reference reference)

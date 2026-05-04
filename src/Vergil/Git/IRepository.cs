@@ -1,6 +1,6 @@
 namespace Vergil.Git;
 
-public interface IRepository
+public interface IRepository : IDisposable
 {
     RepositoryInformation Info { get; }
 
