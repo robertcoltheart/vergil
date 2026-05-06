@@ -35,8 +35,8 @@ flowchart TD
 mode: Tagged # Tagged | Continuous
 increment: Patch # Major | Minor | Patch | None
 next-version: 0.0.0
-match: (?<BranchName>.+)
-label: ${BranchName}
+match: (?<BranchName>.+) # Captured and exposed as a variable
+label: ${BranchName} # Can use env vars or captured variables
 tag-prefix: [vV]?
 branches:
   main:
