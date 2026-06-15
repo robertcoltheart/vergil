@@ -1,39 +1,37 @@
+using Vergil.Versioning;
+
 namespace Vergil;
 
 public class VergilVersionBuilder
 {
+    private string repositoryPath = Environment.CurrentDirectory;
+
+    private VergilConfiguration versionConfiguration = new();
+
     public VergilVersionBuilder ForPath(string path)
     {
+        ArgumentException.ThrowIfNullOrEmpty(path);
+
+        repositoryPath = path;
+
         return this;
     }
 
-    public VergilVersionBuilder WithTagPrefix(string prefix)
+    public VergilVersionBuilder WithConfiguration(VergilConfiguration configuration)
     {
-        return this;
-    }
+        ArgumentNullException.ThrowIfNull(configuration);
 
-    public VergilVersionBuilder WithLabel(string label)
-    {
-        return this;
-    }
+        versionConfiguration = configuration;
 
-    public VergilVersionBuilder WithBranchAsLabel()
-    {
-        return this;
-    }
-
-    public VergilVersionBuilder Incrementing(VersionPart part)
-    {
-        return this;
-    }
-
-    public VergilVersionBuilder AddBranchDefinition(string pattern)
-    {
         return this;
     }
 
     public VergilVersion Build()
     {
-        return null;
+        using var provider = new ServiceProvider(repositoryPath, versionConfiguration);
+
+        var calculator = provider.GetService<VersionCalculator>();
+
+        return calculator.Calculate();
     }
 }

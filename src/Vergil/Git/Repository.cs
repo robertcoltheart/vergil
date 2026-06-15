@@ -15,6 +15,7 @@ internal class Repository : IRepository
         Tags = new TagCollection(this);
         Refs = new ReferenceCollection(this);
         ObjectDatabase = new ObjectDatabase(this, new LooseOdbBackend(gitPath), new PackedOdbBackend(gitPath));
+        Commits = new CommitLog(this);
     }
 
     public RepositoryInformation Info { get; }
@@ -44,6 +45,8 @@ internal class Repository : IRepository
     public ReferenceCollection Refs { get; }
 
     public ObjectDatabase ObjectDatabase { get; }
+
+    public IQueryableCommitLog Commits { get; }
 
     public GitObject? Lookup(ObjectId id)
     {

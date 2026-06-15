@@ -4,9 +4,7 @@ public class Branch(IRepository repository, Reference reference, string? canonic
 {
     public Commit? Tip => TargetObject;
 
-    public ICommitLog Commits { get; }
-
-    public virtual Branch? TrackedBranch { get; }
+    public ICommitLog Commits => repository.Commits.QueryBy(new CommitFilter { IncludeReachableFrom = this });
 
     protected override string Shorten()
     {

@@ -1,10 +1,18 @@
 namespace Vergil;
 
-public class VergilConfiguration
+public class VergilConfiguration : VergilBranchConfiguration
 {
-    public string TagPrefix { get; set; } = "v";
+    public VergilConfiguration()
+    {
+        Match = "(?<BranchName>.+)";
+        Label = "${BranchName}";
+        Mode = IncrementMode.Tagged;
+        Increment = VersionPart.Patch;
+    }
 
-    public string? Path { get; set; }
+    public string NextVersion { get; set; } = "0.0.0";
 
-    public VersionPart Incrementing { get; set; } = VersionPart.Metadata;
+    public string TagPrefix { get; set; } = "v|V?";
+
+    public List<VergilBranchConfiguration> Branhes { get; set; } = [];
 }

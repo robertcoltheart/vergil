@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Vergil.Versioning;
 
 namespace Vergil;
 
@@ -18,10 +19,7 @@ public class VergilVersion
     // Number of commits since VersionSourceSha
     public int BuildMetadata => VersionSourceDistance;
 
-    public string EscapedBranchName => BranchName
-        .Replace('/', '-')
-        .Replace('\\', '-')
-        .Replace('.', '-');
+    public string EscapedBranchName => BranchName.Escaped();
 
     public string FullBuildMetadata => IsPreRelease
         ? $"{PreReleaseNumber}.Branch.{EscapedBranchName}.Sha.{Sha}"
@@ -64,21 +62,6 @@ public class VergilVersion
     public required string VersionSourceSha { get; init; }
 
     private bool IsPreRelease => !string.IsNullOrEmpty(PreReleaseLabel);
-
-    public VergilVersion Increment(VersionPart part)
-    {
-        return this;
-    }
-
-    public VergilVersion WithBranchLabel()
-    {
-        return this;
-    }
-
-    public VergilVersion WithLabel(string label)
-    {
-        return this;
-    }
 
     public override string ToString()
     {

@@ -12,5 +12,7 @@ public interface IRepository : IDisposable
 
     ObjectDatabase ObjectDatabase { get; }
 
+    IQueryableCommitLog Commits { get; }
+
     GitObject? Lookup(ObjectId id);
 }

@@ -117,6 +117,42 @@ public class SemanticVersion : IEquatable<SemanticVersion>, IComparable<Semantic
                value.All(c => c is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or >= '0' and <= '9' or '-');
     }
 
+    public SemanticVersion WithMajor(int major)
+    {
+        return new SemanticVersion
+        {
+            Major = major,
+            Minor = Minor,
+            Patch = Patch,
+            PrereleaseLabels = PrereleaseLabels,
+            Metadata = Metadata
+        };
+    }
+
+    public SemanticVersion WithMinor(int minor)
+    {
+        return new SemanticVersion
+        {
+            Major = Major,
+            Minor = minor,
+            Patch = Patch,
+            PrereleaseLabels = PrereleaseLabels,
+            Metadata = Metadata
+        };
+    }
+
+    public SemanticVersion WithPatch(int patch)
+    {
+        return new SemanticVersion
+        {
+            Major = Major,
+            Minor = Minor,
+            Patch = patch,
+            PrereleaseLabels = PrereleaseLabels,
+            Metadata = Metadata
+        };
+    }
+
     public override string ToString()
     {
         var value = new StringBuilder();
