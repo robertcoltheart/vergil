@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/Vergil.Tests/Vergil.Tests.csproj" />
+  <Project Path="src/Vergil.Tool/Vergil.Tool.csproj" Id="7398f50a-d87d-4a61-b90d-b6079cc24876" />
+  <Project Path="src/Vergil/Vergil.csproj" />
+</Solution>

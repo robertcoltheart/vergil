@@ -11,6 +11,54 @@ Install the package from NuGet with `dotnet add package Vergil`.
 Example code
 ```
 
+### Versioning Strategy
+- If current commit has a version tag
+  - Use the version as-is
+- If current commit does not have a version tag
+  - Search commit history for highest version tag
+    - No tag found
+      - Use 0.0.0 with height
+    - Tag found
+      - Use tag with height
+
+```mermaid
+flowchart TD
+    A[Current commit] --> |Has tag| B[Use tag]
+    A --> |No tag| C[Search history]
+    C --> |No tags| D[0.0.0]
+    C --> |Highest tag| E[Tag + height]
+```
+
+### Configuration
+
+```yaml
+mode: Tagged # Tagged | Continuous
+increment: Patch # Major | Minor | Patch | None
+next-version: 0.0.0
+match: (?<BranchName>.+) # Captured and exposed as a variable
+label: ${BranchName} # Can use env vars or captured variables
+tag-prefix: [vV]?
+branches:
+  main:
+    match: ^master$|^main$
+    label:
+  release:
+    match: ^releases?[\\/-]
+    increment: Patch
+    label:
+    mode: Continuous
+  feature:
+    match: ^features?[\\/-](?<BranchName>.+)
+    label: ${BranchName}
+  pull-request:
+    match: ^(pull-requests|pull|pr)[\\/-](?<Number>\\d*)
+    label: PullRequest${Number}
+```
+
+#### Options
+1. Choose which part of the version to increment if height needs to be added
+2. Use a custom label for pre-release versions, or use the current branch name
+
 ## Documentation
 See the [wiki](https://github.com/robertcoltheart/vergil/wiki) for examples and help using Vergil.
 
@@ -21,6 +69,3 @@ Discuss with us on [Discussions](https://github.com/robertcoltheart/vergil/discu
 
 ## Contributing
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to contribute to this project.
-
-## License
-Vergil is released under the [MIT License](LICENSE)
